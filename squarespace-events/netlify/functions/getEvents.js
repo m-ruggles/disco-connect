@@ -2,6 +2,7 @@ const fetch = require("node-fetch");
 
 exports.handler = async (event, context) => {
   const token = process.env.PCO_ACCESS_TOKEN;
+  const clientId = process.env.PCO_CLIENT_ID;
 
   if (!token) {
     return {
@@ -11,9 +12,10 @@ exports.handler = async (event, context) => {
   }
 
   try {
+    const basicAuth = Buffer.from(`${clientId}:${token}`).toString("base64");
     const response = await fetch("https://api.planningcenteronline.com/registrations/v2/events", {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Basic ${basicAuth}`,
         "Content-Type": "application/json",
         Accept: "application/json",
         "X-PCO-API-Version": "2018-08-01",
